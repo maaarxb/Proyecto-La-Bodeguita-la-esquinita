@@ -1,9 +1,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using FediCasa.Services;
+using BodegaLaEsquinita.Services;
 
-namespace FediCasa.Forms
+namespace BodegaLaEsquinita.Forms
 {
     public class FrmMenuPrincipal : Form
     {
@@ -35,7 +35,7 @@ namespace FediCasa.Forms
 
         private void ConfigurarFormulario()
         {
-            Text = "FediCasa - Menú principal";
+            Text = "BodegaLaEsquinita - Menú principal";
 
             StartPosition =
                 FormStartPosition.CenterScreen;
@@ -68,7 +68,7 @@ namespace FediCasa.Forms
         {
             lblTitulo = new Label
             {
-                Text = "FediCasa",
+                Text = "BodegaLaEsquinita",
                 Font = new Font(
                     "Segoe UI",
                     28F,
@@ -249,10 +249,10 @@ namespace FediCasa.Forms
             lblBienvenida.Text =
                 $"Bienvenido, {nombre}";
 
-            if (SesionService.EsUsuarioMaestro())
+            if (SesionService.EsAdministrador())
             {
                 lblPerfil.Text =
-                    "USUARIO MAESTRO · ACCESO TOTAL";
+                    "ADMINISTRADOR · ACCESO TOTAL";
             }
             else
             {
@@ -291,7 +291,7 @@ namespace FediCasa.Forms
             bool verVentas =
                 SesionService.PuedeGestionarVentas() ||
                 SesionService.PuedeGestionarClientes() ||
-                SesionService.PuedeGestionarProformas() ||
+
                 esMaestro;
 
             // CU-02 Gestionar usuarios
@@ -474,8 +474,7 @@ namespace FediCasa.Forms
             EventArgs e)
         {
             if (!SesionService.PuedeGestionarVentas() &&
-                !SesionService.PuedeGestionarClientes() &&
-                !SesionService.PuedeGestionarProformas())
+                !SesionService.PuedeGestionarClientes() )
             {
                 MostrarAccesoDenegado();
                 return;
@@ -589,7 +588,7 @@ namespace FediCasa.Forms
         {
             DialogResult respuesta =
                 MessageBox.Show(
-                    "¿Deseas salir de FediCasa?",
+                    "¿Deseas salir de BodegaLaEsquinita?",
                     "Salir del sistema",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
@@ -618,7 +617,7 @@ namespace FediCasa.Forms
             {
                 DialogResult respuesta =
                     MessageBox.Show(
-                        "¿Deseas salir de FediCasa?",
+                        "¿Deseas salir de BodegaLaEsquinita?",
                         "Cerrar aplicación",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);

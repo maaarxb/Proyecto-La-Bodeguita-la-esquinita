@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FediCasa.Helpers;
-using FediCasa.Models;
+using BodegaLaEsquinita.Helpers;
+using BodegaLaEsquinita.Models;
 
-namespace FediCasa.Services
+namespace BodegaLaEsquinita.Services
 {
     public static class SolicitudService
     {
@@ -39,13 +39,6 @@ namespace FediCasa.Services
             if (!SesionService.PuedeCrearSolicitud())
             {
                 mensaje = "Tu perfil no puede crear solicitudes.";
-                return false;
-            }
-
-            // Ventas solo reporta incidencias.
-            if (SesionService.EsVentas() && tipo != Solicitud.Incidencia)
-            {
-                mensaje = "Ventas solo puede reportar incidencias.";
                 return false;
             }
 
@@ -104,18 +97,6 @@ namespace FediCasa.Services
         // ---------------------------------------------------------
 
         public static bool Aprobar(
-            int id,
-            string comentario,
-            out string mensaje)
-        {
-            // El candado evita aprobar dos veces desde dos instancias.
-            using (ArchivoHelper.BloquearDatos())
-            {
-                return AprobarInterno(id, comentario, out mensaje);
-            }
-        }
-
-        private static bool AprobarInterno(
             int id,
             string comentario,
             out string mensaje)
@@ -252,12 +233,12 @@ namespace FediCasa.Services
                 return false;
             }
 
-            bool esMaestro = SesionService.EsUsuarioMaestro();
+            bool esMaestro = SesionService.EsAdministrador();
 
             // Derivadas: solo el usuario maestro las atiende.
             if (s.Estado == Solicitud.Derivada && !esMaestro)
             {
-                mensaje = "Esta incidencia fue derivada al usuario maestro.";
+                mensaje = "Esta incidencia fue derivada al Administrador.";
                 return false;
             }
 
@@ -299,22 +280,6 @@ namespace FediCasa.Services
         // ---------------------------------------------------------
 
         public static bool EjecutarOperacion(
-            string tipo,
-            string codigo,
-            int cantidad,
-            string motivo,
-            string solicitante,
-            out string mensaje)
-        {
-            using (ArchivoHelper.BloquearDatos())
-            {
-                return EjecutarOperacionInterno(
-                    tipo, codigo, cantidad, motivo,
-                    solicitante, out mensaje);
-            }
-        }
-
-        private static bool EjecutarOperacionInterno(
             string tipo,
             string codigo,
             int cantidad,

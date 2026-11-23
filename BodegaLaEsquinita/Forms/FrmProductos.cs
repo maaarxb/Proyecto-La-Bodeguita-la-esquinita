@@ -2,10 +2,10 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using FediCasa.Models;
-using FediCasa.Services;
+using BodegaLaEsquinita.Models;
+using BodegaLaEsquinita.Services;
 
-namespace FediCasa.Forms
+namespace BodegaLaEsquinita.Forms
 {
     public class FrmProductos : Form
     {
@@ -39,7 +39,7 @@ namespace FediCasa.Forms
 
         public FrmProductos()
         {
-            Text = "FediCasa - Gestión de productos";
+            Text = "BodegaLaEsquinita - Gestión de productos";
             StartPosition = FormStartPosition.CenterScreen;
             Size = new Size(1180, 720);
             MinimumSize = new Size(1000, 650);
@@ -71,7 +71,7 @@ namespace FediCasa.Forms
             Label lblSubtitulo = new Label
             {
                 Text =
-                    "Registro, actualización y control de productos de FediCasa",
+                    "Registro, actualización y control de productos de BodegaLaEsquinita",
                 Font = new Font("Segoe UI", 9),
                 ForeColor = Color.DimGray,
                 AutoSize = true,
@@ -347,7 +347,7 @@ namespace FediCasa.Forms
             if (!puedeGestionar)
             {
                 Text =
-                    "FediCasa - Consulta de productos";
+                    "BodegaLaEsquinita - Consulta de productos";
 
                 btnRegistrar.Visible = false;
                 btnModificar.Visible = false;
@@ -639,7 +639,7 @@ namespace FediCasa.Forms
 
             MessageBox.Show(
                 "Producto registrado correctamente.",
-                "FediCasa",
+                "BodegaLaEsquinita",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
@@ -696,7 +696,7 @@ namespace FediCasa.Forms
 
             MessageBox.Show(
                 "Producto modificado correctamente.",
-                "FediCasa",
+                "BodegaLaEsquinita",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
@@ -739,7 +739,7 @@ namespace FediCasa.Forms
             {
                 MessageBox.Show(
                     "No se encontró el producto.",
-                    "FediCasa",
+                    "BodegaLaEsquinita",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
 
@@ -764,7 +764,7 @@ namespace FediCasa.Forms
             {
                 MessageBox.Show(
                     mensaje,
-                    "FediCasa",
+                    "BodegaLaEsquinita",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
 
@@ -773,7 +773,7 @@ namespace FediCasa.Forms
 
             MessageBox.Show(
                 "Producto desactivado correctamente.",
-                "FediCasa",
+                "BodegaLaEsquinita",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
@@ -814,7 +814,7 @@ namespace FediCasa.Forms
             {
                 MessageBox.Show(
                     mensaje,
-                    "FediCasa",
+                    "BodegaLaEsquinita",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
 
@@ -823,7 +823,7 @@ namespace FediCasa.Forms
 
             MessageBox.Show(
                 "Producto reactivado correctamente.",
-                "FediCasa",
+                "BodegaLaEsquinita",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 

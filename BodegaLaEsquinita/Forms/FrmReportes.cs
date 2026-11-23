@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using FediCasa.Helpers;
-using FediCasa.Models;
-using FediCasa.Services;
+using BodegaLaEsquinita.Helpers;
+using BodegaLaEsquinita.Models;
+using BodegaLaEsquinita.Services;
 
-namespace FediCasa.Forms
+namespace BodegaLaEsquinita.Forms
 {
     public class FrmReportes : Form
     {
@@ -33,7 +33,7 @@ namespace FediCasa.Forms
 
         private void InicializarFormulario()
         {
-            Text = "FediCasa - Reportes";
+            Text = "BodegaLaEsquinita - Reportes";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
@@ -56,7 +56,7 @@ namespace FediCasa.Forms
             {
                 Text =
                     "Consulta el historial de ventas, inventario y " +
-                    "estadísticas de FediCasa.",
+                    "estadísticas de BodegaLaEsquinita.",
                 Font = new Font(
                     "Segoe UI",
                     10),
@@ -190,7 +190,7 @@ namespace FediCasa.Forms
             {
                 MessageBox.Show(
                     "No existe una sesión activa.",
-                    "FediCasa",
+                    "BodegaLaEsquinita",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
 
@@ -201,20 +201,8 @@ namespace FediCasa.Forms
             {
                 string ruta;
 
-                if (SesionService.EsInventario())
                 {
-                    // Inventario: reporte propio del turno.
-                    ruta =
-                        ReporteHelper.GenerarReporteInventario(
-                            empleado,
-                            SesionService.InicioTurno,
-                            ProductoService.ObtenerProductos(),
-                            SolicitudService.Obtener(),
-                            MovimientoService.Obtener());
-                }
-                else
-                {
-                    // Ventas: reporte sin cambios.
+                    // Vendedor: reporte propio del turno.
                     ruta =
                         ReporteHelper.GenerarReporteTurno(
                             empleado,
@@ -231,7 +219,7 @@ namespace FediCasa.Forms
                 MessageBox.Show(
                     "Reporte de turno generado y guardado.\n\n" +
                     "Archivo:\n" + Path.GetFileName(ruta),
-                    "FediCasa",
+                    "BodegaLaEsquinita",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
@@ -290,7 +278,7 @@ namespace FediCasa.Forms
                 rtbReporte.Text =
                     "No existen reportes generados todavía.\n\n" +
                     "Presione \"Generar reporte\" para crear el " +
-                    "primer reporte de FediCasa.";
+                    "primer reporte de BodegaLaEsquinita.";
             }
         }
 
@@ -319,7 +307,7 @@ namespace FediCasa.Forms
                 {
                     MessageBox.Show(
                         "No existe una sesión activa.",
-                        "FediCasa",
+                        "BodegaLaEsquinita",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
 
@@ -328,33 +316,21 @@ namespace FediCasa.Forms
 
                 string ruta;
 
-                if (SesionService.EsUsuarioMaestro())
-                {
-                    ruta =
-                        ReporteHelper.GenerarReporteMaestro(
-                            empleado,
-                            SesionService.InicioTurno,
-                            SolicitudService.Obtener(),
-                            MovimientoService.Obtener(),
-                            ActividadService.ObtenerDelTurno());
-                }
-                else
-                {
-                    ruta =
-                        ReporteHelper.GenerarReporteAdministrador(
-                            empleado,
-                            SesionService.InicioTurno,
-                            ventas,
-                            productos,
-                            SolicitudService.Obtener(),
-                            ActividadService.ObtenerDelTurno());
-                }
+                // Reporte general: lo generan el Administrador y el Vendedor.
+                ruta =
+                    ReporteHelper.GenerarReporteAdministrador(
+                        empleado,
+                        SesionService.InicioTurno,
+                        ventas,
+                        productos,
+                        SolicitudService.Obtener(),
+                        ActividadService.ObtenerDelTurno());
 
                 MessageBox.Show(
                     "Reporte generado correctamente.\n\n" +
                     "Archivo:\n" +
                     Path.GetFileName(ruta),
-                    "FediCasa",
+                    "BodegaLaEsquinita",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
 
@@ -420,7 +396,7 @@ namespace FediCasa.Forms
             {
                 MessageBox.Show(
                     "Seleccione un reporte.",
-                    "FediCasa",
+                    "BodegaLaEsquinita",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
 

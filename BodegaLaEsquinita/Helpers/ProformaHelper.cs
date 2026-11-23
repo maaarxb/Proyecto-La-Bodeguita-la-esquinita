@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using FediCasa.Models;
-using FediCasa.Services;
+using BodegaLaEsquinita.Models;
+using BodegaLaEsquinita.Services;
 
-namespace FediCasa.Helpers
+namespace BodegaLaEsquinita.Helpers
 {
     /// <summary>
-    /// Genera y guarda proformas (cotizaciones) de FediCasa.
+    /// Genera y guarda proformas (cotizaciones) de BodegaLaEsquinita.
     ///
     /// Una proforma NO es una venta: no descuenta stock, no se
     /// registra en ventas.txt y no es un comprobante de pago.

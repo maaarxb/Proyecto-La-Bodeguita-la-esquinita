@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using FediCasa.Models;
-using FediCasa.Services;
+using BodegaLaEsquinita.Models;
+using BodegaLaEsquinita.Services;
 
-namespace FediCasa.Forms
+namespace BodegaLaEsquinita.Forms
 {
     /// <summary>
     /// Historial de operaciones.
@@ -45,7 +45,7 @@ namespace FediCasa.Forms
                 return;
             }
 
-            Text = "FediCasa - Historial de operaciones";
+            Text = "BodegaLaEsquinita - Historial de operaciones";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;

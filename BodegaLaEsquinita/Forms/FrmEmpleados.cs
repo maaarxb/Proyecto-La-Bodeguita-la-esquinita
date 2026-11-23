@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using FediCasa.Helpers;
-using FediCasa.Models;
-using FediCasa.Services;
+using BodegaLaEsquinita.Helpers;
+using BodegaLaEsquinita.Models;
+using BodegaLaEsquinita.Services;
 
-namespace FediCasa.Forms
+namespace BodegaLaEsquinita.Forms
 {
     public class FrmEmpleados : Form
     {
@@ -74,7 +74,7 @@ namespace FediCasa.Forms
 
         private void ConfigurarFormulario()
         {
-            Text = "FediCasa - Gestión de usuarios";
+            Text = "BodegaLaEsquinita - Gestión de usuarios";
 
             StartPosition = FormStartPosition.CenterScreen;
 
@@ -113,7 +113,7 @@ namespace FediCasa.Forms
             lblSubtitulo = new Label
             {
                 Text =
-                    "Administra los usuarios y roles autorizados de FediCasa.",
+                    "Administra los usuarios y roles autorizados de BodegaLaEsquinita.",
                 Font = new Font(
                     "Segoe UI",
                     10F),
@@ -185,10 +185,9 @@ namespace FediCasa.Forms
             };
 
             cmbCargo.Items.Add("Administrador");
-            cmbCargo.Items.Add("Inventario");
-            cmbCargo.Items.Add("Ventas");
+            cmbCargo.Items.Add("Vendedor");
 
-            cmbCargo.SelectedIndex = 2;
+            cmbCargo.SelectedIndex = 1;
 
             // -----------------------------------------------------
             // BOTONES
@@ -404,7 +403,7 @@ namespace FediCasa.Forms
                     empleado.Usuario,
                     empleado.NombreCompleto,
                     empleado.EsUsuarioMaestro
-                        ? "Usuario maestro"
+                        ? "Administrador (principal)"
                         : empleado.Cargo);
 
                 dgvEmpleados.Rows[fila].Tag =
@@ -610,7 +609,6 @@ namespace FediCasa.Forms
             {
                 int cantidadAdministradores =
                     empleados.Count(e =>
-                        !e.EsUsuarioMaestro &&
                         e.Cargo.Equals(
                             "Administrador",
                             StringComparison.OrdinalIgnoreCase));
@@ -748,7 +746,6 @@ namespace FediCasa.Forms
             {
                 int cantidadAdministradores =
                     empleados.Count(e =>
-                        !e.EsUsuarioMaestro &&
                         e.Cargo.Equals(
                             "Administrador",
                             StringComparison.OrdinalIgnoreCase));
@@ -923,7 +920,7 @@ namespace FediCasa.Forms
 
             if (empleado.EsUsuarioMaestro)
             {
-                cmbCargo.SelectedIndex = -1;
+                cmbCargo.SelectedItem = "Administrador";
 
                 txtUsuario.ReadOnly = true;
                 txtContraseña.ReadOnly = true;
@@ -949,7 +946,7 @@ namespace FediCasa.Forms
             }
             else
             {
-                cmbCargo.SelectedIndex = 2;
+                cmbCargo.SelectedIndex = 1;
             }
 
             ActualizarEstadoControles();
@@ -993,7 +990,7 @@ namespace FediCasa.Forms
             txtContraseña.Clear();
             txtNombre.Clear();
 
-            cmbCargo.SelectedIndex = 2;
+            cmbCargo.SelectedIndex = 1;
 
             dgvEmpleados.ClearSelection();
 

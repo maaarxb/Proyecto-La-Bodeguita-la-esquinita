@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FediCasa.Helpers;
-using FediCasa.Models;
+using BodegaLaEsquinita.Helpers;
+using BodegaLaEsquinita.Models;
 
-namespace FediCasa.Services
+namespace BodegaLaEsquinita.Services
 {
     public static class VentaService
     {
@@ -20,9 +20,6 @@ namespace FediCasa.Services
             new List<ItemCarrito>();
 
         private static bool inicializado = false;
-
-        // Versión de ventas.txt que tenemos en memoria.
-        private static string firmaVentas = string.Empty;
 
         // ============================================================
         // RUTAS
@@ -49,22 +46,7 @@ namespace FediCasa.Services
         private static void Inicializar()
         {
             if (inicializado)
-            {
-                // Si otra instancia cambió ventas.txt, se vuelve a leer
-                // (el carrito actual no se toca).
-                string firma = ArchivoHelper.FirmaArchivoVentas();
-
-                if (firma != firmaVentas)
-                {
-                    ventas =
-                        ArchivoHelper.LeerVentas()
-                        ?? new List<Venta>();
-
-                    firmaVentas = firma;
-                }
-
                 return;
-            }
 
             ventas =
                 ArchivoHelper.LeerVentas()
@@ -72,8 +54,6 @@ namespace FediCasa.Services
 
             carrito =
                 new List<ItemCarrito>();
-
-            firmaVentas = ArchivoHelper.FirmaArchivoVentas();
 
             inicializado = true;
         }
@@ -589,28 +569,6 @@ namespace FediCasa.Services
             out int idVenta,
             out string mensaje)
         {
-            using (ArchivoHelper.BloquearDatos())
-            {
-                return RegistrarVentaInterno(
-                    listaCarrito,
-                    documentoCliente,
-                    nombreCliente,
-                    formaPago,
-                    out idVenta,
-                    out mensaje);
-            }
-        }
-
-        private static bool RegistrarVentaInterno(
-            List<ItemCarrito> listaCarrito,
-            string documentoCliente,
-            string nombreCliente,
-            string formaPago,
-            out int idVenta,
-            out string mensaje)
-        {
-            Inicializar();
-
             idVenta = 0;
             mensaje = string.Empty;
 
@@ -745,16 +703,6 @@ namespace FediCasa.Services
         // ============================================================
 
         public static bool ConfirmarVenta(
-            int idVenta,
-            out string mensaje)
-        {
-            using (ArchivoHelper.BloquearDatos())
-            {
-                return ConfirmarVentaInterno(idVenta, out mensaje);
-            }
-        }
-
-        private static bool ConfirmarVentaInterno(
             int idVenta,
             out string mensaje)
         {
@@ -929,16 +877,6 @@ namespace FediCasa.Services
             int idVenta,
             out string mensaje)
         {
-            using (ArchivoHelper.BloquearDatos())
-            {
-                return AnularVentaInterno(idVenta, out mensaje);
-            }
-        }
-
-        private static bool AnularVentaInterno(
-            int idVenta,
-            out string mensaje)
-        {
             Inicializar();
 
             mensaje = string.Empty;
@@ -1050,8 +988,6 @@ namespace FediCasa.Services
         private static void GuardarTodasLasVentas()
         {
             ArchivoHelper.GuardarVentas(ventas);
-
-            firmaVentas = ArchivoHelper.FirmaArchivoVentas();
         }
 
         // ============================================================
@@ -1292,20 +1228,6 @@ namespace FediCasa.Services
                 new List<ItemCarrito>();
 
             Inicializar();
-        }
-
-        // ============================================================
-        // CONSULTAS DE PRODUCTOS ORIENTADAS A LA VENTA
-        // ============================================================
-
-        public static Producto BuscarProductoActivo(string codigo)
-        {
-            return ProductoService.BuscarActivoPorCodigo(codigo);
-        }
-
-        public static List<Producto> BuscarProductosActivos(string texto)
-        {
-            return ProductoService.Buscar(texto);
         }
     }
 }

@@ -1,8 +1,8 @@
 using System;
 using System.Windows.Forms;
-using FediCasa.Forms;
+using BodegaLaEsquinita.Forms;
 
-namespace FediCasa
+namespace BodegaLaEsquinita
 {
     internal static class Program
     {
@@ -15,7 +15,7 @@ namespace FediCasa
             // Configuración inicial de Windows Forms.
             ApplicationConfiguration.Initialize();
 
-            // Inicia FediCasa mostrando primero el formulario de Login.
+            // Inicia BodegaLaEsquinita mostrando primero el formulario de Login.
             Application.Run(new FrmLogin());
         }
     }

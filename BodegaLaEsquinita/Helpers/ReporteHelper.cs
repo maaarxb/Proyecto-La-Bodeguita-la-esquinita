@@ -4,13 +4,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using FediCasa.Models;
+using BodegaLaEsquinita.Models;
 
-namespace FediCasa.Helpers
+namespace BodegaLaEsquinita.Helpers
 {
     /// <summary>
     /// Clase auxiliar encargada de generar y consultar
-    /// los reportes del sistema FediCasa.
+    /// los reportes del sistema BodegaLaEsquinita.
     ///
     /// Los reportes se almacenan como archivos TXT dentro
     /// de la carpeta Data/Reportes.
@@ -57,7 +57,7 @@ namespace FediCasa.Helpers
         // ─────────────────────────────────────────────
 
         /// <summary>
-        /// Genera un reporte completo de FediCasa.
+        /// Genera un reporte completo de BodegaLaEsquinita.
         ///
         /// El reporte incluye:
         /// - Datos del negocio.
@@ -151,7 +151,7 @@ namespace FediCasa.Helpers
             );
 
             sb.AppendLine(
-                "                         FEDICASA"
+                "                    BODEGA LA ESQUINITA"
             );
 
             sb.AppendLine(
@@ -553,7 +553,7 @@ namespace FediCasa.Helpers
             );
 
             sb.AppendLine(
-                "              FIN DEL REPORTE - FEDICASA"
+                "          FIN DEL REPORTE - BODEGA LA ESQUINITA"
             );
 
             sb.AppendLine(
@@ -678,13 +678,13 @@ namespace FediCasa.Helpers
             DateTime ahora = DateTime.Now;
             string usuario = empleado.Usuario;
             bool esVentas = empleado.Cargo.Equals(
-                "Ventas", StringComparison.OrdinalIgnoreCase);
+                "Vendedor", StringComparison.OrdinalIgnoreCase);
 
             StringBuilder sb = new StringBuilder();
             string raya = new string('=', 70);
 
             sb.AppendLine(raya);
-            sb.AppendLine("FEDICASA - REPORTE DE TURNO");
+            sb.AppendLine("BODEGA LA ESQUINITA - REPORTE DE TURNO");
             sb.AppendLine(raya);
             sb.AppendLine("Usuario : " + usuario);
             sb.AppendLine("Nombre  : " + empleado.NombreCompleto);
@@ -854,7 +854,7 @@ namespace FediCasa.Helpers
             string doble = new string('=', AnchoReporte);
 
             sb.AppendLine(doble);
-            sb.AppendLine(Centrar("FEDICASA"));
+            sb.AppendLine(Centrar("BODEGA LA ESQUINITA"));
             sb.AppendLine(Centrar(titulo));
             sb.AppendLine(doble);
             sb.AppendLine();
@@ -1134,7 +1134,7 @@ namespace FediCasa.Helpers
             StringBuilder sb = new StringBuilder();
 
             EncabezadoRol(sb, "REPORTE DEL SISTEMA", empleado,
-                          "Administrador", inicioTurno, ahora);
+                          empleado.Cargo, inicioTurno, ahora);
 
             // Ventas confirmadas durante el turno.
             var ventasTurno = ventas
@@ -1276,7 +1276,7 @@ namespace FediCasa.Helpers
 
             Pie(sb);
 
-            return GuardarReporteRol("Administrador", empleado, ahora, sb);
+            return GuardarReporteRol("General", empleado, ahora, sb);
         }
 
         // ------------------------ INVENTARIO ------------------------
@@ -1382,8 +1382,8 @@ namespace FediCasa.Helpers
             string usuario = empleado.Usuario;
             StringBuilder sb = new StringBuilder();
 
-            EncabezadoRol(sb, "REPORTE DEL USUARIO MAESTRO", empleado,
-                          "Usuario maestro", inicioTurno, ahora);
+            EncabezadoRol(sb, "REPORTE DEL ADMINISTRADOR", empleado,
+                          "Administrador", inicioTurno, ahora);
 
             Bloque(sb, "ACCIONES ADMINISTRATIVAS Y TÉCNICAS");
 

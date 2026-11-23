@@ -2,10 +2,10 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using FediCasa.Models;
-using FediCasa.Services;
+using BodegaLaEsquinita.Models;
+using BodegaLaEsquinita.Services;
 
-namespace FediCasa.Forms
+namespace BodegaLaEsquinita.Forms
 {
     /// <summary>
     /// Solicitudes e incidencias.
@@ -31,7 +31,7 @@ namespace FediCasa.Forms
 
         public FrmSolicitudes()
         {
-            Text = "FediCasa - Solicitudes e incidencias";
+            Text = "BodegaLaEsquinita - Solicitudes e incidencias";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
@@ -165,7 +165,7 @@ namespace FediCasa.Forms
                 Size = new Size(220, 28)
             };
 
-            if (SesionService.EsInventario())
+            if (SesionService.EsVendedor())
             {
                 cboTipo.Items.AddRange(new object[]
                 {
@@ -316,8 +316,8 @@ namespace FediCasa.Forms
             btnResolver = CrearBoton("Marcar resuelta", 15, 170, grp);
             btnDerivar = CrearBoton("Derivar a admin", 195, 170, grp);
 
-            // El usuario maestro no deriva: él es el destino.
-            btnDerivar.Enabled = SesionService.EsAdministrador();
+            // Ya no hay un nivel superior al Administrador: no se deriva.
+            btnDerivar.Visible = false;
 
             btnAprobar.Click += (s, e) => Revisar("aprobar");
             btnRechazar.Click += (s, e) => Revisar("rechazar");

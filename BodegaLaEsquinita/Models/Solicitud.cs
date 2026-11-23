@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace FediCasa.Models
+namespace BodegaLaEsquinita.Models
 {
     /// <summary>
     /// Solicitud o incidencia creada por un trabajador y revisada

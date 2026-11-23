@@ -2,10 +2,10 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using FediCasa.Models;
-using FediCasa.Services;
+using BodegaLaEsquinita.Models;
+using BodegaLaEsquinita.Services;
 
-namespace FediCasa.Forms
+namespace BodegaLaEsquinita.Forms
 {
     /// <summary>
     /// Consulta de inventario (Ventas e Inventario) y operaciones de
@@ -26,7 +26,7 @@ namespace FediCasa.Forms
 
         public FrmInventario()
         {
-            Text = "FediCasa - Inventario";
+            Text = "BodegaLaEsquinita - Inventario";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
@@ -38,9 +38,6 @@ namespace FediCasa.Forms
             Construir();
             ConfigurarPermisos();
             CargarProductos();
-
-            // Al volver a esta ventana se lee el stock actual de los archivos.
-            Activated += (s, e) => CargarProductos();
         }
 
         private void Construir()
@@ -158,12 +155,12 @@ namespace FediCasa.Forms
             return boton;
         }
 
-        // Ventas y Administrador solo consultan.
-        // Inventario envía solicitudes; el maestro opera directamente.
+        // El Administrador opera directamente.
+        // El Vendedor consulta y envía solicitudes.
         private void ConfigurarPermisos()
         {
-            bool maestro = SesionService.EsUsuarioMaestro();
-            bool inventario = SesionService.EsInventario();
+            bool maestro = SesionService.EsAdministrador();
+            bool inventario = SesionService.EsVendedor();
 
             bool puedeOperar = maestro || inventario;
 
@@ -181,7 +178,7 @@ namespace FediCasa.Forms
             }
 
             if (!puedeOperar)
-                Text = "FediCasa - Consulta de inventario";
+                Text = "BodegaLaEsquinita - Consulta de inventario";
         }
 
         private void CargarProductos()
@@ -289,9 +286,9 @@ namespace FediCasa.Forms
             bool ok;
             string mensaje;
 
-            if (SesionService.EsUsuarioMaestro())
+            if (SesionService.EsAdministrador())
             {
-                // El maestro opera directamente.
+                // El Administrador opera directamente.
                 ok = SolicitudService.EjecutarOperacion(
                     tipo, codigo, cantidad, motivo,
                     SesionService.ObtenerUsuarioActual(),

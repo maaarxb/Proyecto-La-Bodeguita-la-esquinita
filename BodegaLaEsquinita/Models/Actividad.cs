@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace FediCasa.Models
+namespace BodegaLaEsquinita.Models
 {
     /// <summary>
     /// Acción administrativa realizada por un usuario (productos,

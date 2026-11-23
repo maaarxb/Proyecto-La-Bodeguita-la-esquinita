@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using FediCasa.Services;
+using BodegaLaEsquinita.Services;
 
-namespace FediCasa.Forms
+namespace BodegaLaEsquinita.Forms
 {
     public class FrmLogin : Form
     {
@@ -28,7 +28,7 @@ namespace FediCasa.Forms
 
         private void ConfigurarFormulario()
         {
-            Text = "FediCasa - Inicio de sesión";
+            Text = "BodegaLaEsquinita - Inicio de sesión";
 
             StartPosition = FormStartPosition.CenterScreen;
 
@@ -49,18 +49,17 @@ namespace FediCasa.Forms
         {
             lblTitulo = new Label
             {
-                Text = "FEDICASA",
-                Font = new Font(
-                    "Segoe UI",
-                    28F,
-                    FontStyle.Bold),
-                AutoSize = true,
-                Location = new Point(150, 35)
+                Text = "Bodega La Esquinita",
+                Font = new Font("Segoe UI", 22F, FontStyle.Bold),
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                Bounds = new Rectangle(0, 30, this.ClientSize.Width, 50)
             };
 
             lblSubtitulo = new Label
             {
-                Text = "Sistema de Gestión de Ferretería",
+                Text = "Sistema de Gestión de Bodega",
                 Font = new Font(
                     "Segoe UI",
                     11F),
@@ -145,7 +144,7 @@ namespace FediCasa.Forms
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "No se pudo inicializar FediCasa.\n\n" +
+                    "No se pudo inicializar BodegaLaEsquinita.\n\n" +
                     "Detalle: " + ex.Message,
                     "Error de inicialización",
                     MessageBoxButtons.OK,
@@ -229,21 +228,13 @@ namespace FediCasa.Forms
 
             string perfil;
 
-            if (SesionService.EsUsuarioMaestro())
+            if (SesionService.EsAdministrador())
             {
-                perfil = "USUARIO MAESTRO - ACCESO TOTAL";
+                perfil = "ADMINISTRADOR - ACCESO TOTAL";
             }
-            else if (SesionService.EsAdministrador())
+            else if (SesionService.EsVendedor())
             {
-                perfil = "ADMINISTRADOR";
-            }
-            else if (SesionService.EsInventario())
-            {
-                perfil = "INVENTARIO";
-            }
-            else if (SesionService.EsVentas())
-            {
-                perfil = "VENTAS";
+                perfil = "VENDEDOR";
             }
             else
             {
@@ -255,7 +246,7 @@ namespace FediCasa.Forms
                 $"Bienvenido(a), {nombre}.\n\n" +
                 $"Usuario: {usuario}\n" +
                 $"Perfil: {perfil}",
-                "Bienvenido a FediCasa",
+                "Bienvenido a BodegaLaEsquinita",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
@@ -303,7 +294,7 @@ namespace FediCasa.Forms
         {
             DialogResult respuesta =
                 MessageBox.Show(
-                    "¿Deseas salir de FediCasa?",
+                    "¿Deseas salir de BodegaLaEsquinita?",
                     "Confirmar salida",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
@@ -355,7 +346,7 @@ namespace FediCasa.Forms
             {
                 DialogResult respuesta =
                     MessageBox.Show(
-                        "¿Deseas salir de FediCasa?",
+                        "¿Deseas salir de BodegaLaEsquinita?",
                         "Confirmar salida",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);

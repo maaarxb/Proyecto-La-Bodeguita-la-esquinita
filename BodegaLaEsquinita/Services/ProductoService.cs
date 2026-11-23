@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FediCasa.Helpers;
-using FediCasa.Models;
+using BodegaLaEsquinita.Helpers;
+using BodegaLaEsquinita.Models;
 
-namespace FediCasa.Services
+namespace BodegaLaEsquinita.Services
 {
     public static class ProductoService
     {
@@ -13,9 +13,6 @@ namespace FediCasa.Services
 
         private static bool inicializado = false;
 
-        // Versión de productos.txt que tenemos en memoria.
-        private static string firmaProductos = string.Empty;
-
         // =========================================================
         // INICIALIZACIÓN
         // =========================================================
@@ -23,22 +20,7 @@ namespace FediCasa.Services
         public static void Inicializar()
         {
             if (inicializado)
-            {
-                // Si otra instancia cambió productos.txt, se vuelve a leer.
-                string firma = ArchivoHelper.FirmaArchivoProductos();
-
-                if (firma != firmaProductos &&
-                    ArchivoHelper.ExisteArchivoProductos())
-                {
-                    productos.Clear();
-                    productos.AddRange(
-                        ArchivoHelper.LeerProductos());
-
-                    firmaProductos = firma;
-                }
-
                 return;
-            }
 
             productos.Clear();
 
@@ -58,7 +40,6 @@ namespace FediCasa.Services
             }
 
             inicializado = true;
-            firmaProductos = ArchivoHelper.FirmaArchivoProductos();
         }
 
         // =========================================================
@@ -69,99 +50,138 @@ namespace FediCasa.Services
         {
             productos.Add(
                 CrearProductoInicial(
-                    "FER001",
-                    "Taladro eléctrico 650W",
-                    189.90,
+                    "BOD001",
+                    "Arroz extra 1 kg",
+                    4.50,
+                    40,
                     10,
-                    3));
+                    "Kilogramo"));
 
             productos.Add(
                 CrearProductoInicial(
-                    "FER002",
-                    "Martillo de una 16 oz",
-                    35.90,
-                    15,
-                    5));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "FER003",
-                    "Destornillador plano 6 pulgadas",
-                    12.50,
-                    20,
-                    5));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "FER004",
-                    "Destornillador Phillips 6 pulgadas",
-                    13.50,
-                    20,
-                    5));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "FER005",
-                    "Alicate universal 8 pulgadas",
-                    28.90,
-                    12,
-                    4));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "FER006",
-                    "Cinta métrica 5 metros",
-                    18.90,
-                    15,
-                    5));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "FER007",
-                    "Juego de llaves Allen",
-                    24.90,
-                    10,
-                    3));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "FER008",
-                    "Cinta aislante negra",
-                    5.50,
+                    "BOD002",
+                    "Azúcar rubia 1 kg",
+                    4.20,
                     30,
-                    10));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "FER009",
-                    "Tubo PVC 1/2 pulgada",
-                    8.90,
-                    25,
-                    8));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "FER010",
-                    "Pegamento PVC 1/4 galón",
-                    22.90,
-                    12,
-                    4));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "FER011",
-                    "Pintura látex 1 galón",
-                    49.90,
                     10,
-                    3));
+                    "Kilogramo"));
 
             productos.Add(
                 CrearProductoInicial(
-                    "FER012",
-                    "Tornillos surtidos",
-                    15.90,
-                    25,
-                    8));
+                    "BOD003",
+                    "Aceite vegetal 1 L",
+                    9.90,
+                    18,
+                    6,
+                    "Litro"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD004",
+                    "Leche evaporada 400 g",
+                    4.80,
+                    48,
+                    12,
+                    "Unidad"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD005",
+                    "Fideos spaghetti 500 g",
+                    3.50,
+                    36,
+                    10,
+                    "Bolsa"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD006",
+                    "Atún en lata 170 g",
+                    6.50,
+                    24,
+                    8,
+                    "Unidad"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD007",
+                    "Sal de mesa 1 kg",
+                    1.80,
+                    20,
+                    6,
+                    "Bolsa"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD008",
+                    "Pan francés",
+                    0.30,
+                    100,
+                    30,
+                    "Unidad"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD009",
+                    "Huevos (unidad)",
+                    0.80,
+                    60,
+                    20,
+                    "Unidad"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD010",
+                    "Gaseosa 500 ml",
+                    2.50,
+                    24,
+                    8,
+                    "Unidad"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD011",
+                    "Agua sin gas 625 ml",
+                    1.50,
+                    30,
+                    10,
+                    "Unidad"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD012",
+                    "Galletas de soda",
+                    1.00,
+                    40,
+                    12,
+                    "Unidad"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD013",
+                    "Detergente en bolsa 450 g",
+                    5.50,
+                    14,
+                    5,
+                    "Bolsa"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD014",
+                    "Papel higiénico x4",
+                    6.00,
+                    3,
+                    6,
+                    "Bolsa"));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "BOD015",
+                    "Jabón de tocador",
+                    2.20,
+                    0,
+                    5,
+                    "Unidad"));
         }
 
         private static Producto CrearProductoInicial(
@@ -169,7 +189,8 @@ namespace FediCasa.Services
             string nombre,
             double precio,
             int stock,
-            int stockMinimo)
+            int stockMinimo,
+            string unidad)
         {
             return new Producto(
                 codigo,
@@ -177,7 +198,7 @@ namespace FediCasa.Services
                 precio,
                 stock,
                 stockMinimo,
-                "Unidad",
+                unidad,
                 true);
         }
 
@@ -883,17 +904,6 @@ namespace FediCasa.Services
                 2);
         }
 
-        // Solo devuelve el producto si está activo (para ventas).
-        public static Producto BuscarActivoPorCodigo(
-            string codigo)
-        {
-            Producto producto = BuscarPorCodigo(codigo);
-
-            return producto != null && producto.Activo
-                ? producto
-                : null;
-        }
-
         // =========================================================
         // PERSISTENCIA
         // =========================================================
@@ -904,8 +914,6 @@ namespace FediCasa.Services
 
             ArchivoHelper.GuardarProductos(
                 productos);
-
-            firmaProductos = ArchivoHelper.FirmaArchivoProductos();
         }
 
         // =========================================================

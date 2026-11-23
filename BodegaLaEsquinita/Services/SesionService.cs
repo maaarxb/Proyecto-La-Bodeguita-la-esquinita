@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using FediCasa.Helpers;
-using FediCasa.Models;
+using BodegaLaEsquinita.Helpers;
+using BodegaLaEsquinita.Models;
 
-namespace FediCasa.Services
+namespace BodegaLaEsquinita.Services
 {
     public static class SesionService
     {
@@ -117,57 +117,27 @@ namespace FediCasa.Services
         // =========================================================
         // IDENTIFICACIÓN DE PERFIL
         // =========================================================
+        // El sistema tiene solo dos roles:
+        //   Administrador: acceso total (propietaria).
+        //   Vendedor     : vende, consulta stock, envía solicitudes y
+        //                  genera el reporte de su turno (ayudante).
 
-        /// <summary>
-        /// Determina si el usuario actual es el usuario maestro Admin.
-        /// El usuario maestro tiene acceso total al sistema.
-        /// </summary>
-        public static bool EsUsuarioMaestro()
-        {
-            return SesionActiva &&
-                   EmpleadoActual.EsUsuarioMaestro;
-        }
+        public const string RolAdministrador = "Administrador";
+        public const string RolVendedor = "Vendedor";
 
-        /// <summary>
-        /// Determina si el usuario actual es el actor Administrador
-        /// del CUS.
-        ///
-        /// IMPORTANTE:
-        /// Un usuario maestro también tiene cargo Administrador,
-        /// pero no debe confundirse con este actor.
-        /// </summary>
         public static bool EsAdministrador()
         {
             return SesionActiva &&
-                   !EmpleadoActual.EsUsuarioMaestro &&
                    EmpleadoActual.Cargo.Equals(
-                       "Administrador",
+                       RolAdministrador,
                        StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>
-        /// Determina si el usuario actual pertenece al área
-        /// de Inventario.
-        /// </summary>
-        public static bool EsInventario()
+        public static bool EsVendedor()
         {
             return SesionActiva &&
-                   !EmpleadoActual.EsUsuarioMaestro &&
                    EmpleadoActual.Cargo.Equals(
-                       "Inventario",
-                       StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
-        /// Determina si el usuario actual pertenece al área
-        /// de Ventas.
-        /// </summary>
-        public static bool EsVentas()
-        {
-            return SesionActiva &&
-                   !EmpleadoActual.EsUsuarioMaestro &&
-                   EmpleadoActual.Cargo.Equals(
-                       "Ventas",
+                       RolVendedor,
                        StringComparison.OrdinalIgnoreCase);
         }
 
@@ -175,224 +145,141 @@ namespace FediCasa.Services
         // PERMISOS GENERALES
         // =========================================================
 
-        /// <summary>
-        /// El usuario maestro puede acceder a cualquier módulo.
-        /// </summary>
         public static bool TieneAccesoTotal()
         {
-            return EsUsuarioMaestro();
+            return EsAdministrador();
         }
 
         // =========================================================
-        // PERMISOS DE CASOS DE USO
+        // PERMISOS POR FUNCIÓN
         // =========================================================
 
-        // ---------------------------------------------------------
-        // CU-02 Gestionar usuarios
-        // ---------------------------------------------------------
-
-        // Solo el usuario maestro crea, modifica y elimina usuarios.
+        // Usuarios: solo el Administrador.
         public static bool PuedeGestionarUsuarios()
         {
-            return EsUsuarioMaestro();
+            return EsAdministrador();
         }
 
-        // El Administrador solo puede visualizar usuarios.
         public static bool PuedeVerUsuarios()
         {
-            return EsUsuarioMaestro() ||
-                   EsAdministrador();
+            return EsAdministrador();
         }
 
-        // Inventario y Ventas crean solicitudes / incidencias.
+        // Solicitudes: el Vendedor las crea y el Administrador las revisa.
         public static bool PuedeCrearSolicitud()
         {
-            return EsInventario() ||
-                   EsVentas();
+            return EsVendedor();
         }
 
-        // El Administrador (y el maestro) revisan las solicitudes.
         public static bool PuedeAutorizarSolicitudes()
         {
-            return EsUsuarioMaestro() ||
-                   EsAdministrador();
+            return EsAdministrador();
         }
 
-        // ---------------------------------------------------------
-        // CU-03 Gestionar productos
-        // ---------------------------------------------------------
-
+        // Productos y precios: solo el Administrador.
         public static bool PuedeGestionarProductos()
         {
-            return EsUsuarioMaestro() ||
-                   EsAdministrador();
+            return EsAdministrador();
         }
 
-        // ---------------------------------------------------------
-        // CU-04 Consultar inventario
-        // ---------------------------------------------------------
-
+        // Inventario: ambos consultan; el Administrador opera directamente
+        // y el Vendedor envía solicitudes.
         public static bool PuedeConsultarInventario()
         {
-            return EsUsuarioMaestro() ||
-                   EsAdministrador() ||
-                   EsInventario() ||
-                   EsVentas();
+            return EsAdministrador() ||
+                   EsVendedor();
         }
-
-        // ---------------------------------------------------------
-        // CU-05 Registrar ingreso de productos
-        // ---------------------------------------------------------
 
         public static bool PuedeRegistrarIngreso()
         {
-            return EsUsuarioMaestro() ||
-                   EsInventario();
+            return EsAdministrador();
         }
-
-        // ---------------------------------------------------------
-        // CU-06 Registrar salida de productos
-        // ---------------------------------------------------------
 
         public static bool PuedeRegistrarSalida()
         {
-            return EsUsuarioMaestro() ||
-                   EsInventario();
+            return EsAdministrador();
         }
-
-        // ---------------------------------------------------------
-        // CU-07 Actualizar existencias
-        // ---------------------------------------------------------
 
         public static bool PuedeActualizarExistencias()
         {
-            return EsUsuarioMaestro() ||
-                   EsInventario();
+            return EsAdministrador();
         }
-
-        // ---------------------------------------------------------
-        // CU-08 Gestionar diferencias de inventario
-        // ---------------------------------------------------------
 
         public static bool PuedeGestionarDiferencias()
         {
-            return EsUsuarioMaestro() ||
-                   EsInventario();
+            return EsAdministrador();
         }
-
-        // ---------------------------------------------------------
-        // CU-09 Consultar movimientos de inventario
-        // ---------------------------------------------------------
 
         public static bool PuedeConsultarMovimientos()
         {
-            return EsUsuarioMaestro() ||
-                   EsInventario();
+            return EsAdministrador();
         }
 
-        // ---------------------------------------------------------
-        // CU-10 Gestionar clientes
-        // ---------------------------------------------------------
-
+        // Ventas y atención al cliente: ambos roles.
         public static bool PuedeGestionarClientes()
         {
-            return EsUsuarioMaestro() ||
-                   EsVentas();
+            return EsAdministrador() ||
+                   EsVendedor();
         }
-
-        // ---------------------------------------------------------
-        // CU-11 Gestionar proformas
-        // ---------------------------------------------------------
 
         public static bool PuedeGestionarProformas()
         {
-            return EsUsuarioMaestro() ||
-                   EsVentas();
+            return EsAdministrador() ||
+                   EsVendedor();
         }
-
-        // ---------------------------------------------------------
-        // CU-12 Convertir proforma en venta
-        // ---------------------------------------------------------
 
         public static bool PuedeConvertirProforma()
         {
-            return EsUsuarioMaestro() ||
-                   EsVentas();
+            return EsAdministrador() ||
+                   EsVendedor();
         }
-
-        // ---------------------------------------------------------
-        // CU-13 Gestionar ventas
-        // ---------------------------------------------------------
 
         public static bool PuedeGestionarVentas()
         {
-            return EsUsuarioMaestro() ||
-                   EsVentas();
+            return EsAdministrador() ||
+                   EsVendedor();
         }
-
-        // ---------------------------------------------------------
-        // CU-14 Confirmar venta
-        // ---------------------------------------------------------
 
         public static bool PuedeConfirmarVenta()
         {
-            return EsUsuarioMaestro() ||
-                   EsVentas();
+            return EsAdministrador() ||
+                   EsVendedor();
         }
 
-        // Anular venta (registrada o confirmada)
         public static bool PuedeAnularVenta()
         {
-            return EsUsuarioMaestro() ||
-                   EsVentas();
+            return EsAdministrador() ||
+                   EsVendedor();
         }
-
-        // ---------------------------------------------------------
-        // CU-15 Generar comprobante de venta
-        // ---------------------------------------------------------
 
         public static bool PuedeGenerarComprobante()
         {
-            return EsUsuarioMaestro() ||
-                   EsVentas();
+            return EsAdministrador() ||
+                   EsVendedor();
         }
-
-        // ---------------------------------------------------------
-        // CU-16 Gestionar entregas
-        // ---------------------------------------------------------
 
         public static bool PuedeGestionarEntregas()
         {
-            return EsUsuarioMaestro() ||
-                   EsVentas();
+            return EsAdministrador() ||
+                   EsVendedor();
         }
 
-        // ---------------------------------------------------------
-        // CU-17 Generar reportes
-        // ---------------------------------------------------------
-
+        // Reportes: el Administrador genera el reporte general y el
+        // Vendedor solo el reporte de su turno (desde que inició sesión).
         public static bool PuedeGenerarReportes()
         {
-            return EsUsuarioMaestro() ||
-                   EsAdministrador();
+            return EsAdministrador();
         }
 
-        // Ventas e Inventario: solo el reporte de su turno.
         public static bool PuedeGenerarReporteTurno()
         {
-            return EsVentas() ||
-                   EsInventario();
+            return EsVendedor();
         }
 
-        // ---------------------------------------------------------
-        // CU-18 Consultar historial de operaciones
-        // ---------------------------------------------------------
-
+        // Historial de operaciones: solo el Administrador.
         public static bool PuedeConsultarHistorial()
         {
-            return EsUsuarioMaestro() ||
-                   EsAdministrador();
+            return EsAdministrador();
         }
     }
 }
-
