@@ -1,4 +1,4 @@
-﻿namespace BodegaLaEsquinita
+﻿namespace FediCasa
 {
     partial class Form1
     {

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 
-namespace BodegaLaEsquinita.Helpers
+namespace FediCasa.Helpers
 {
     public static class Validaciones
     {
@@ -227,11 +227,10 @@ namespace BodegaLaEsquinita.Helpers
 
         /// <summary>
         /// Valida únicamente los cargos que representan actores
-        /// reales del CUS de BodegaLaEsquinita.
+        /// reales del CUS de FediCasa.
         ///
         /// IMPORTANTE:
-        /// Solo existen dos cargos: Administrador y Vendedor.
-        /// La cuenta "admin" es el Administrador principal (protegida).
+        /// "Admin" NO es un cargo. Es el usuario maestro.
         /// </summary>
         public static bool EsCargoValido(string cargo)
         {
@@ -243,7 +242,8 @@ namespace BodegaLaEsquinita.Helpers
             string[] cargosPermitidos =
             {
                 "Administrador",
-                "Vendedor"
+                "Inventario",
+                "Ventas"
             };
 
             return cargosPermitidos.Any(c =>

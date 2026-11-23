@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace BodegaLaEsquinita.Models
+namespace FediCasa.Models
 {
     public class Venta
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BodegaLaEsquinita.Models
+namespace FediCasa.Models
 {
     public class Empleado
     {

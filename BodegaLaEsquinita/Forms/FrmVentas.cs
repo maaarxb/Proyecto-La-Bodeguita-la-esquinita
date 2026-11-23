@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BodegaLaEsquinita.Helpers;
-using BodegaLaEsquinita.Models;
-using BodegaLaEsquinita.Services;
+using FediCasa.Helpers;
+using FediCasa.Models;
+using FediCasa.Services;
 
-namespace BodegaLaEsquinita.Forms
+namespace FediCasa.Forms
 {
     public class FrmVentas : Form
     {
@@ -15,35 +15,31 @@ namespace BodegaLaEsquinita.Forms
         // CONTROLES
         // =========================================================
 
-        private TextBox txtCodigoProducto = null!;
-        private TextBox txtCantidad = null!;
-        private TextBox txtDocumentoCliente = null!;
-        private TextBox txtNombreCliente = null!;
+        private TextBox txtCodigoProducto;
+        private TextBox txtCantidad;
+        private TextBox txtDocumentoCliente;
+        private TextBox txtNombreCliente;
 
-        private ComboBox cboFormaPago = null!;
+        private ComboBox cboFormaPago;
 
-        private Button btnAgregar = null!;
-        private ListBox lstSugerencias = null!;
-        private Label lblInfoProducto = null!;
-        private bool ignorarCambioTexto;
-        private Button btnModificar = null!;
-        private Button btnEliminar = null!;
-        private Button btnVaciar = null!;
-        private Button btnRegistrar = null!;
-        private Button btnConfirmar = null!;
-        private Button btnBoleta = null!;
-        private Button btnAnular = null!;
-       
-        private Button btnCerrar = null!;
+        private Button btnAgregar;
+        private Button btnModificar;
+        private Button btnEliminar;
+        private Button btnVaciar;
+        private Button btnRegistrar;
+        private Button btnConfirmar;
+        private Button btnBoleta;
+        private Button btnAnular;
+        private Button btnCerrar;
 
-        private DataGridView dgvCarrito = null!;
+        private DataGridView dgvCarrito;
 
-        private Label lblSubtotal = null!;
-        private Label lblIGV = null!;
-        private Label lblTotal = null!;
+        private Label lblSubtotal;
+        private Label lblIGV;
+        private Label lblTotal;
 
-        private Label lblVendedor = null!;
-        private Label lblEstadoVenta = null!;
+        private Label lblVendedor;
+        private Label lblEstadoVenta;
 
         private int idVentaActual = 0;
 
@@ -56,7 +52,7 @@ namespace BodegaLaEsquinita.Forms
 
         public FrmVentas()
         {
-            Text = "BodegaLaEsquinita - Gestión de ventas";
+            Text = "FediCasa - Gestión de ventas";
             StartPosition =
                 FormStartPosition.CenterScreen;
 
@@ -134,7 +130,7 @@ namespace BodegaLaEsquinita.Forms
                 new Label
                 {
                     Text =
-                        "Buscar:",
+                        "Código:",
 
                     AutoSize = true,
 
@@ -195,30 +191,31 @@ namespace BodegaLaEsquinita.Forms
             btnAgregar.Click +=
                 BtnAgregar_Click;
 
-            lblInfoProducto =
+            Label lblInfo =
                 new Label
                 {
                     Text =
-                        "Escriba el código o parte del nombre\n" +
-                        "y elija el producto de la lista.",
-                    AutoSize = false,
+                        "Ingrese el código del producto y la cantidad.\n" +
+                        "Solo se pueden vender productos activos.",
+
+                    AutoSize = true,
+
                     ForeColor =
                         Color.DimGray,
+
                     Location =
-                        new Point(20, 112),
-                    Size =
-                        new Size(390, 58)
+                        new Point(20, 115)
                 };
 
             grpProducto.Controls.AddRange(
                 new Control[]
                 {
-                lblCodigo,
-                txtCodigoProducto,
-                lblCantidad,
-                txtCantidad,
-                btnAgregar,
-                lblInfoProducto
+                    lblCodigo,
+                    txtCodigoProducto,
+                    lblCantidad,
+                    txtCantidad,
+                    btnAgregar,
+                    lblInfo
                 });
 
             // =====================================================
@@ -274,7 +271,6 @@ namespace BodegaLaEsquinita.Forms
                         new Point(360, 35)
                 };
 
-            // Instanciamos el TextBox del cliente aquí para que exista
             txtNombreCliente =
                 new TextBox
                 {
@@ -315,11 +311,11 @@ namespace BodegaLaEsquinita.Forms
             cboFormaPago.Items.AddRange(
                 new object[]
                 {
-                "Efectivo",
-                "Yape",
-                "Plin",
-                "Tarjeta",
-                "Transferencia"
+                    "Efectivo",
+                    "Yape",
+                    "Plin",
+                    "Tarjeta",
+                    "Transferencia"
                 });
 
             if (cboFormaPago.Items.Count > 0)
@@ -358,20 +354,15 @@ namespace BodegaLaEsquinita.Forms
             grpCliente.Controls.AddRange(
                 new Control[]
                 {
-                lblDocumento,
-                txtDocumentoCliente,
-                lblNombre,
-                txtNombreCliente,
-                lblPago,
-                cboFormaPago,
-                lblEstadoVenta,
-                lblNota
+                    lblDocumento,
+                    txtDocumentoCliente,
+                    lblNombre,
+                    txtNombreCliente,
+                    lblPago,
+                    cboFormaPago,
+                    lblEstadoVenta,
+                    lblNota
                 });
-
-            // =========================================================
-            // INTERFAZ (Inicialización segura de eventos dependientes)
-            // =========================================================
-            CrearBuscadorProductos();
 
             // =====================================================
             // CARRITO
@@ -566,11 +557,10 @@ namespace BodegaLaEsquinita.Forms
                     Text =
                         "Anular venta",
                     Location =
-                        new Point(840, 635), // Movido a la derecha y debajo de "Generar boleta"
+                        new Point(390, 590),
                     Size =
                         new Size(140, 38)
                 };
-
 
             btnCerrar =
                 new Button
@@ -666,7 +656,7 @@ namespace BodegaLaEsquinita.Forms
             if (!puedeVender)
             {
                 Text =
-                    "BodegaLaEsquinita - Consulta de ventas";
+                    "FediCasa - Consulta de ventas";
             }
         }
 
@@ -697,220 +687,15 @@ namespace BodegaLaEsquinita.Forms
             AgregarProductoAlCarrito();
         }
 
-        // =========================================================
-        // BÚSQUEDA RÁPIDA DE PRODUCTOS (por código o nombre)
-        // =========================================================
-
-        private class ItemBusqueda
-        {
-            public Producto Producto;
-
-            public override string ToString()
-            {
-                string stock =
-                    Producto.Stock > 0
-                        ? "Stock " + Producto.Stock
-                        : "AGOTADO";
-
-                return Producto.Nombre +
-                       "  (" + Producto.Codigo + ")  -  S/ " +
-                       Producto.Precio.ToString("0.00") +
-                       "  -  " + stock;
-            }
-        }
-
-        private void CrearBuscadorProductos()
-        {
-            lstSugerencias =
-                new ListBox
-                {
-                    Visible = false,
-                    Width = 430,
-                    Font = new Font("Segoe UI", 10),
-                    IntegralHeight = false,
-                    BorderStyle = BorderStyle.FixedSingle
-                };
-
-            Controls.Add(lstSugerencias);
-
-            txtCodigoProducto.TextChanged +=
-                (s, e) => ActualizarSugerencias();
-
-            txtCodigoProducto.Leave +=
-                (s, e) => BeginInvoke(
-                    new Action(() =>
-                    {
-                        if (!lstSugerencias.Focused)
-                            lstSugerencias.Visible = false;
-                    }));
-
-            lstSugerencias.Click +=
-                (s, e) => ElegirSugerencia();
-
-            lstSugerencias.KeyDown +=
-                (s, e) =>
-                {
-                    if (e.KeyCode == Keys.Enter)
-                    {
-                        e.SuppressKeyPress = true;
-                        ElegirSugerencia();
-                    }
-                    else if (e.KeyCode == Keys.Escape)
-                    {
-                        lstSugerencias.Visible = false;
-                        txtCodigoProducto.Focus();
-                    }
-                };
-
-            // Enter en cantidad agrega el producto.
-            txtCantidad.KeyDown +=
-                (s, e) =>
-                {
-                    if (e.KeyCode == Keys.Enter)
-                    {
-                        e.SuppressKeyPress = true;
-                        AgregarProductoAlCarrito();
-                    }
-                };
-        }
-
-        private void ActualizarSugerencias()
-        {
-            if (ignorarCambioTexto)
-                return;
-
-            string texto = txtCodigoProducto.Text.Trim();
-
-            lstSugerencias.Items.Clear();
-
-            if (texto == string.Empty)
-            {
-                lstSugerencias.Visible = false;
-                MostrarInfoProducto(null);
-                return;
-            }
-
-            // Coincidencia exacta de código: muestra su resumen.
-            MostrarInfoProducto(
-                ProductoService.BuscarPorCodigo(texto));
-
-            var resultados =
-                ProductoService.Buscar(texto)
-                    .OrderByDescending(p =>
-                        p.Codigo.Equals(
-                            texto,
-                            StringComparison.OrdinalIgnoreCase))
-                    .ThenByDescending(p =>
-                        p.Nombre.StartsWith(
-                            texto,
-                            StringComparison.OrdinalIgnoreCase) ||
-                        p.Codigo.StartsWith(
-                            texto,
-                            StringComparison.OrdinalIgnoreCase))
-                    .ThenBy(p => p.Nombre)
-                    .Take(8)
-                    .ToList();
-
-            if (resultados.Count == 0)
-            {
-                lstSugerencias.Visible = false;
-                return;
-            }
-
-            foreach (Producto p in resultados)
-            {
-                lstSugerencias.Items.Add(
-                    new ItemBusqueda { Producto = p });
-            }
-
-            Point posicion =
-                PointToClient(
-                    txtCodigoProducto.Parent.PointToScreen(
-                        new Point(
-                            txtCodigoProducto.Left,
-                            txtCodigoProducto.Bottom)));
-
-            lstSugerencias.Location = posicion;
-            lstSugerencias.Height =
-                Math.Min(resultados.Count, 8) * 22 + 6;
-
-            lstSugerencias.SelectedIndex = 0;
-            lstSugerencias.Visible = true;
-            lstSugerencias.BringToFront();
-        }
-
-        private void ElegirSugerencia()
-        {
-            ItemBusqueda item =
-                lstSugerencias.SelectedItem as ItemBusqueda;
-
-            if (item == null)
-                return;
-
-            ignorarCambioTexto = true;
-            txtCodigoProducto.Text = item.Producto.Codigo;
-            ignorarCambioTexto = false;
-
-            lstSugerencias.Visible = false;
-            MostrarInfoProducto(item.Producto);
-
-            txtCantidad.Focus();
-            txtCantidad.SelectAll();
-        }
-
-        private void MostrarInfoProducto(Producto producto)
-        {
-            if (producto == null)
-            {
-                lblInfoProducto.ForeColor = Color.DimGray;
-                lblInfoProducto.Text =
-                    "Escriba el código o parte del nombre\n" +
-                    "y elija el producto de la lista.";
-                return;
-            }
-
-            lblInfoProducto.ForeColor =
-                producto.Stock > 0
-                    ? Color.FromArgb(30, 100, 50)
-                    : Color.Firebrick;
-
-            lblInfoProducto.Text =
-                producto.Nombre + "\n" +
-                "Código: " + producto.Codigo +
-                "   |   Precio: S/ " +
-                producto.Precio.ToString("0.00") + "\n" +
-                "Stock disponible: " + producto.Stock + " " +
-                producto.UnidadMedida;
-        }
-
         private void TxtCodigoProducto_KeyDown(
             object sender,
             KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down &&
-                lstSugerencias.Visible)
-            {
-                e.SuppressKeyPress = true;
-                lstSugerencias.Focus();
-            }
-            else if (e.KeyCode == Keys.Escape)
-            {
-                lstSugerencias.Visible = false;
-            }
-            else if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
 
-                // Con lista abierta, Enter elige la primera opción.
-                if (lstSugerencias.Visible &&
-                    lstSugerencias.SelectedItem != null)
-                {
-                    ElegirSugerencia();
-                }
-                else
-                {
-                    AgregarProductoAlCarrito();
-                }
+                AgregarProductoAlCarrito();
             }
         }
 
@@ -960,32 +745,6 @@ namespace BodegaLaEsquinita.Forms
                 ProductoService.BuscarPorCodigo(
                     codigo);
 
-            // Si escribió un nombre en vez del código.
-            if (producto == null)
-            {
-                var coincidencias =
-                    ProductoService.Buscar(codigo);
-
-                if (coincidencias.Count == 1)
-                {
-                    producto = coincidencias[0];
-                    codigo = producto.Codigo;
-                }
-                else if (coincidencias.Count > 1)
-                {
-                    ActualizarSugerencias();
-
-                    MessageBox.Show(
-                        "Hay varios productos con ese nombre." +
-                        "Elija uno de la lista.",
-                        "Venta",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-
-                    return;
-                }
-            }
-
             if (producto == null)
             {
                 MessageBox.Show(
@@ -1032,9 +791,7 @@ namespace BodegaLaEsquinita.Forms
                     $"Stock insuficiente.\n\n" +
                     $"Producto: {producto.Nombre}\n" +
                     $"Stock disponible: {producto.Stock}\n" +
-                    $"Ya en el carrito: {existente?.Cantidad ?? 0}\n" +
-                    $"Cantidad solicitada ahora: {cantidad}\n\n" +
-                    "No hay stock suficiente para esa cantidad.",
+                    $"Cantidad solicitada: {cantidadFinal}",
                     "Stock insuficiente",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
@@ -1317,13 +1074,14 @@ namespace BodegaLaEsquinita.Forms
                 $"Número de venta: {idVentaActual}\n" +
                 $"Total: S/ {ObtenerTotalVentaActual():0.00}\n\n" +
                 "Ahora debe confirmar la venta.",
-                "BodegaLaEsquinita",
+                "FediCasa",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
             btnRegistrar.Enabled = false;
             btnConfirmar.Enabled = true;
             btnBoleta.Enabled = false;
+
             txtCodigoProducto.Enabled = false;
             txtCantidad.Enabled = false;
             btnAgregar.Enabled = false;
@@ -1395,7 +1153,7 @@ namespace BodegaLaEsquinita.Forms
             MessageBox.Show(
                 "Venta confirmada correctamente.\n\n" +
                 "La operación quedó lista para generar el comprobante.",
-                "BodegaLaEsquinita",
+                "FediCasa",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
@@ -1525,7 +1283,7 @@ namespace BodegaLaEsquinita.Forms
 
             MessageBox.Show(
                 mensaje,
-                "BodegaLaEsquinita",
+                "FediCasa",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
@@ -1604,28 +1362,10 @@ namespace BodegaLaEsquinita.Forms
         // VALIDAR DATOS DE VENTA
         // =========================================================
 
-        private bool EsNombreClienteValido(string nombre)
-        {
-            if (string.IsNullOrWhiteSpace(nombre))
-                return true; // se registrará como "Cliente general"
-
-            nombre = nombre.Trim();
-
-            if (nombre.Length < 2)
-                return false;
-
-            foreach (char c in nombre)
-            {
-                if (!char.IsLetter(c) && c != ' ')
-                    return false;
-            }
-
-            return true;
-        }
-
         private bool ValidarDatosVenta()
         {
-            if (string.IsNullOrWhiteSpace(cboFormaPago.Text))
+            if (string.IsNullOrWhiteSpace(
+                cboFormaPago.Text))
             {
                 MessageBox.Show(
                     "Seleccione una forma de pago.",
@@ -1636,51 +1376,19 @@ namespace BodegaLaEsquinita.Forms
                 return false;
             }
 
-            // Validación del Nombre (actúa al registrar)
-            if (!EsNombreClienteValido(txtNombreCliente.Text))
+            if (!string.IsNullOrWhiteSpace(
+                txtDocumentoCliente.Text))
             {
-                MessageBox.Show(
-                    "El nombre del cliente no es válido.\n\n" +
-                    "Use solo letras y espacios (sin números ni símbolos).",
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-
-                txtNombreCliente.Focus();
-                return false;
-            }
-
-            // Validación del Documento (actúa al registrar)
-            string documento = txtDocumentoCliente.Text.Trim();
-            if (!string.IsNullOrWhiteSpace(documento))
-            {
-                // Verificamos que sean solo números
-                foreach (char c in documento)
-                {
-                    if (!char.IsDigit(c))
-                    {
-                        MessageBox.Show(
-                            "El documento del cliente solo debe contener números.",
-                            "Validación",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning);
-
-                        txtDocumentoCliente.Focus();
-                        return false;
-                    }
-                }
-
-                // Verificamos la cantidad de dígitos (por ejemplo, mínimo 8 para un DNI o 11 para RUC)
-                if (documento.Length != 8 && documento.Length != 11)
+                if (txtDocumentoCliente.Text.Length < 8)
                 {
                     MessageBox.Show(
-                        "El número de documento del cliente no parece válido.\n\n" +
-                        "Debe ser un DNI de 8 dígitos o un RUC de 11 dígitos.",
+                        "El documento del cliente no parece válido.",
                         "Validación",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
 
                     txtDocumentoCliente.Focus();
+
                     return false;
                 }
             }
@@ -1792,7 +1500,6 @@ namespace BodegaLaEsquinita.Forms
 
             btnBoleta.Enabled = false;
 
-
             txtCodigoProducto.Enabled = true;
             txtCantidad.Enabled = true;
 
@@ -1829,7 +1536,7 @@ namespace BodegaLaEsquinita.Forms
                 new Form
                 {
                     Text =
-                        "BodegaLaEsquinita - Boleta de venta",
+                        "FediCasa - Boleta de venta",
 
                     StartPosition =
                         FormStartPosition.CenterParent,

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using BodegaLaEsquinita.Helpers;
-using BodegaLaEsquinita.Models;
-using BodegaLaEsquinita.Services;
+using FediCasa.Helpers;
+using FediCasa.Models;
+using FediCasa.Services;
 
-namespace BodegaLaEsquinita.Forms
+namespace FediCasa.Forms
 {
     public class FrmReportes : Form
     {
@@ -27,13 +27,12 @@ namespace BodegaLaEsquinita.Forms
         public FrmReportes()
         {
             InicializarFormulario();
-            ConfigurarPorRol();
             CargarReportes();
         }
 
         private void InicializarFormulario()
         {
-            Text = "BodegaLaEsquinita - Reportes";
+            Text = "FediCasa - Reportes";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
@@ -56,7 +55,7 @@ namespace BodegaLaEsquinita.Forms
             {
                 Text =
                     "Consulta el historial de ventas, inventario y " +
-                    "estadísticas de BodegaLaEsquinita.",
+                    "estadísticas de FediCasa.",
                 Font = new Font(
                     "Segoe UI",
                     10),
@@ -155,85 +154,6 @@ namespace BodegaLaEsquinita.Forms
             Controls.Add(rtbReporte);
         }
 
-        // Ventas e Inventario solo ven "Generar reporte" (su turno).
-        private bool EsSoloTurno()
-        {
-            return SesionService.PuedeGenerarReporteTurno();
-        }
-
-        private void ConfigurarPorRol()
-        {
-            if (!EsSoloTurno())
-                return;
-
-            btnActualizar.Visible = false;
-            btnVerReporte.Visible = false;
-            btnAbrirCarpeta.Visible = false;
-            lblReportes.Visible = false;
-            lstReportes.Visible = false;
-
-            btnCerrar.Location = new Point(210, 110);
-
-            rtbReporte.Location = new Point(40, 175);
-            rtbReporte.Size = new Size(1020, 460);
-
-            lblInformacion.Text =
-                "Genera el resumen de tu turno (desde que iniciaste sesión).";
-        }
-
-        private void GenerarReporteDeTurno()
-        {
-            Empleado empleado =
-                SesionService.ObtenerEmpleadoActual();
-
-            if (empleado == null)
-            {
-                MessageBox.Show(
-                    "No existe una sesión activa.",
-                    "BodegaLaEsquinita",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-
-                return;
-            }
-
-            try
-            {
-                string ruta;
-
-                {
-                    // Vendedor: reporte propio del turno.
-                    ruta =
-                        ReporteHelper.GenerarReporteTurno(
-                            empleado,
-                            SesionService.InicioTurno,
-                            VentaService.ObtenerVentas(),
-                            SolicitudService.Obtener(),
-                            MovimientoService.Obtener());
-                }
-
-                rtbReporte.Text =
-                    ReporteHelper.LeerReporte(
-                        Path.GetFileName(ruta));
-
-                MessageBox.Show(
-                    "Reporte de turno generado y guardado.\n\n" +
-                    "Archivo:\n" + Path.GetFileName(ruta),
-                    "BodegaLaEsquinita",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "No se pudo generar el reporte.\n\n" +
-                    ex.Message,
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-        }
-
         private Button CrearBoton(
             string texto,
             Point ubicacion,
@@ -257,14 +177,6 @@ namespace BodegaLaEsquinita.Forms
             lstReportes.Items.Clear();
             rtbReporte.Clear();
 
-            if (EsSoloTurno())
-            {
-                rtbReporte.Text =
-                    "Presione \"Generar reporte\" para ver el resumen " +
-                    "de lo realizado en su sesión actual.";
-                return;
-            }
-
             List<string> reportes =
                 ReporteHelper.ObtenerReportesHistoricos();
 
@@ -278,7 +190,7 @@ namespace BodegaLaEsquinita.Forms
                 rtbReporte.Text =
                     "No existen reportes generados todavía.\n\n" +
                     "Presione \"Generar reporte\" para crear el " +
-                    "primer reporte de BodegaLaEsquinita.";
+                    "primer reporte de FediCasa.";
             }
         }
 
@@ -286,12 +198,6 @@ namespace BodegaLaEsquinita.Forms
             object sender,
             EventArgs e)
         {
-            if (EsSoloTurno())
-            {
-                GenerarReporteDeTurno();
-                return;
-            }
-
             try
             {
                 List<Venta> ventas =
@@ -307,30 +213,24 @@ namespace BodegaLaEsquinita.Forms
                 {
                     MessageBox.Show(
                         "No existe una sesión activa.",
-                        "BodegaLaEsquinita",
+                        "FediCasa",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
 
                     return;
                 }
 
-                string ruta;
-
-                // Reporte general: lo generan el Administrador y el Vendedor.
-                ruta =
-                    ReporteHelper.GenerarReporteAdministrador(
-                        empleado,
-                        SesionService.InicioTurno,
+                string ruta =
+                    ReporteHelper.GenerarReporteCompleto(
                         ventas,
                         productos,
-                        SolicitudService.Obtener(),
-                        ActividadService.ObtenerDelTurno());
+                        empleado);
 
                 MessageBox.Show(
                     "Reporte generado correctamente.\n\n" +
                     "Archivo:\n" +
                     Path.GetFileName(ruta),
-                    "BodegaLaEsquinita",
+                    "FediCasa",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
 
@@ -396,7 +296,7 @@ namespace BodegaLaEsquinita.Forms
             {
                 MessageBox.Show(
                     "Seleccione un reporte.",
-                    "BodegaLaEsquinita",
+                    "FediCasa",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
 

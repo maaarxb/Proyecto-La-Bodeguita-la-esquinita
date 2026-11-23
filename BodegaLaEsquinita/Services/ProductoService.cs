@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BodegaLaEsquinita.Helpers;
-using BodegaLaEsquinita.Models;
+using FediCasa.Helpers;
+using FediCasa.Models;
 
-namespace BodegaLaEsquinita.Services
+namespace FediCasa.Services
 {
     public static class ProductoService
     {
@@ -50,138 +50,99 @@ namespace BodegaLaEsquinita.Services
         {
             productos.Add(
                 CrearProductoInicial(
-                    "BOD001",
-                    "Arroz extra 1 kg",
-                    4.50,
-                    40,
+                    "FER001",
+                    "Taladro eléctrico 650W",
+                    189.90,
                     10,
-                    "Kilogramo"));
+                    3));
 
             productos.Add(
                 CrearProductoInicial(
-                    "BOD002",
-                    "Azúcar rubia 1 kg",
-                    4.20,
-                    30,
-                    10,
-                    "Kilogramo"));
+                    "FER002",
+                    "Martillo de una 16 oz",
+                    35.90,
+                    15,
+                    5));
 
             productos.Add(
                 CrearProductoInicial(
-                    "BOD003",
-                    "Aceite vegetal 1 L",
-                    9.90,
-                    18,
-                    6,
-                    "Litro"));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "BOD004",
-                    "Leche evaporada 400 g",
-                    4.80,
-                    48,
-                    12,
-                    "Unidad"));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "BOD005",
-                    "Fideos spaghetti 500 g",
-                    3.50,
-                    36,
-                    10,
-                    "Bolsa"));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "BOD006",
-                    "Atún en lata 170 g",
-                    6.50,
-                    24,
-                    8,
-                    "Unidad"));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "BOD007",
-                    "Sal de mesa 1 kg",
-                    1.80,
+                    "FER003",
+                    "Destornillador plano 6 pulgadas",
+                    12.50,
                     20,
-                    6,
-                    "Bolsa"));
+                    5));
 
             productos.Add(
                 CrearProductoInicial(
-                    "BOD008",
-                    "Pan francés",
-                    0.30,
-                    100,
-                    30,
-                    "Unidad"));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "BOD009",
-                    "Huevos (unidad)",
-                    0.80,
-                    60,
+                    "FER004",
+                    "Destornillador Phillips 6 pulgadas",
+                    13.50,
                     20,
-                    "Unidad"));
+                    5));
 
             productos.Add(
                 CrearProductoInicial(
-                    "BOD010",
-                    "Gaseosa 500 ml",
-                    2.50,
-                    24,
-                    8,
-                    "Unidad"));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "BOD011",
-                    "Agua sin gas 625 ml",
-                    1.50,
-                    30,
-                    10,
-                    "Unidad"));
-
-            productos.Add(
-                CrearProductoInicial(
-                    "BOD012",
-                    "Galletas de soda",
-                    1.00,
-                    40,
+                    "FER005",
+                    "Alicate universal 8 pulgadas",
+                    28.90,
                     12,
-                    "Unidad"));
+                    4));
 
             productos.Add(
                 CrearProductoInicial(
-                    "BOD013",
-                    "Detergente en bolsa 450 g",
+                    "FER006",
+                    "Cinta métrica 5 metros",
+                    18.90,
+                    15,
+                    5));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "FER007",
+                    "Juego de llaves Allen",
+                    24.90,
+                    10,
+                    3));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "FER008",
+                    "Cinta aislante negra",
                     5.50,
-                    14,
-                    5,
-                    "Bolsa"));
+                    30,
+                    10));
 
             productos.Add(
                 CrearProductoInicial(
-                    "BOD014",
-                    "Papel higiénico x4",
-                    6.00,
-                    3,
-                    6,
-                    "Bolsa"));
+                    "FER009",
+                    "Tubo PVC 1/2 pulgada",
+                    8.90,
+                    25,
+                    8));
 
             productos.Add(
                 CrearProductoInicial(
-                    "BOD015",
-                    "Jabón de tocador",
-                    2.20,
-                    0,
-                    5,
-                    "Unidad"));
+                    "FER010",
+                    "Pegamento PVC 1/4 galón",
+                    22.90,
+                    12,
+                    4));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "FER011",
+                    "Pintura látex 1 galón",
+                    49.90,
+                    10,
+                    3));
+
+            productos.Add(
+                CrearProductoInicial(
+                    "FER012",
+                    "Tornillos surtidos",
+                    15.90,
+                    25,
+                    8));
         }
 
         private static Producto CrearProductoInicial(
@@ -189,8 +150,7 @@ namespace BodegaLaEsquinita.Services
             string nombre,
             double precio,
             int stock,
-            int stockMinimo,
-            string unidad)
+            int stockMinimo)
         {
             return new Producto(
                 codigo,
@@ -198,7 +158,7 @@ namespace BodegaLaEsquinita.Services
                 precio,
                 stock,
                 stockMinimo,
-                unidad,
+                "Unidad",
                 true);
         }
 
@@ -443,10 +403,6 @@ namespace BodegaLaEsquinita.Services
 
             Guardar();
 
-            ActividadService.Registrar(
-                "Producto registrado",
-                producto.Codigo + " - " + producto.Nombre);
-
             return true;
         }
 
@@ -604,10 +560,6 @@ namespace BodegaLaEsquinita.Services
 
             Guardar();
 
-            ActividadService.Registrar(
-                "Producto modificado",
-                producto.Codigo + " - " + producto.Nombre);
-
             return true;
         }
 
@@ -649,10 +601,6 @@ namespace BodegaLaEsquinita.Services
 
             Guardar();
 
-            ActividadService.Registrar(
-                "Producto desactivado",
-                producto.Codigo + " - " + producto.Nombre);
-
             return true;
         }
 
@@ -693,10 +641,6 @@ namespace BodegaLaEsquinita.Services
             producto.Activar();
 
             Guardar();
-
-            ActividadService.Registrar(
-                "Producto reactivado",
-                producto.Codigo + " - " + producto.Nombre);
 
             return true;
         }

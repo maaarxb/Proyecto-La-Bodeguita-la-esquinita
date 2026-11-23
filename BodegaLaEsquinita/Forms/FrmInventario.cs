@@ -2,10 +2,10 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BodegaLaEsquinita.Models;
-using BodegaLaEsquinita.Services;
+using FediCasa.Models;
+using FediCasa.Services;
 
-namespace BodegaLaEsquinita.Forms
+namespace FediCasa.Forms
 {
     /// <summary>
     /// Consulta de inventario (Ventas e Inventario) y operaciones de
@@ -26,7 +26,7 @@ namespace BodegaLaEsquinita.Forms
 
         public FrmInventario()
         {
-            Text = "BodegaLaEsquinita - Inventario";
+            Text = "FediCasa - Inventario";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
@@ -155,30 +155,25 @@ namespace BodegaLaEsquinita.Forms
             return boton;
         }
 
-        // El Administrador opera directamente.
-        // El Vendedor consulta y envía solicitudes.
+        // Ventas solo consulta; Inventario y maestro operan.
         private void ConfigurarPermisos()
         {
-            bool maestro = SesionService.EsAdministrador();
-            bool inventario = SesionService.EsVendedor();
+            btnIngreso.Enabled = SesionService.PuedeRegistrarIngreso();
+            btnSalida.Enabled = SesionService.PuedeRegistrarSalida();
+            btnDiferencia.Enabled =
+                SesionService.PuedeGestionarDiferencias() &&
+                SesionService.PuedeActualizarExistencias();
 
-            bool puedeOperar = maestro || inventario;
+            bool puedeOperar =
+                btnIngreso.Enabled ||
+                btnSalida.Enabled ||
+                btnDiferencia.Enabled;
 
-            btnIngreso.Enabled = puedeOperar;
-            btnSalida.Enabled = puedeOperar;
-            btnDiferencia.Enabled = puedeOperar;
             txtCantidad.Enabled = puedeOperar;
             txtMotivo.Enabled = puedeOperar;
 
-            if (inventario)
-            {
-                btnIngreso.Text = "Solicitar ingreso";
-                btnSalida.Text = "Solicitar salida";
-                btnDiferencia.Text = "Solicitar diferencia";
-            }
-
             if (!puedeOperar)
-                Text = "BodegaLaEsquinita - Consulta de inventario";
+                Text = "FediCasa - Consulta de inventario";
         }
 
         private void CargarProductos()
@@ -258,62 +253,97 @@ namespace BodegaLaEsquinita.Forms
             return true;
         }
 
+        private void Terminar(string tipo, string codigo, int cantidad, string motivo)
+        {
+            MovimientoService.Registrar(tipo, codigo, cantidad, motivo);
+            txtCantidad.Clear();
+            txtMotivo.Clear();
+            CargarProductos();
+
+            MessageBox.Show("Operación registrada correctamente.", "Inventario",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         private void BtnIngreso_Click(object sender, EventArgs e)
         {
-            Procesar(Solicitud.Ingreso);
+            if (!SesionService.PuedeRegistrarIngreso())
+                return;
+
+            if (!LeerDatos(false, out string codigo, out int cantidad, out string motivo))
+                return;
+
+            if (!ProductoService.AumentarStock(codigo, cantidad, out string mensaje))
+            {
+                MessageBox.Show(mensaje, "Inventario",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Terminar("Ingreso", codigo, cantidad, motivo);
         }
 
         private void BtnSalida_Click(object sender, EventArgs e)
         {
-            Procesar(Solicitud.Salida);
+            if (!SesionService.PuedeRegistrarSalida())
+                return;
+
+            if (!LeerDatos(false, out string codigo, out int cantidad, out string motivo))
+                return;
+
+            if (!ProductoService.ReducirStock(codigo, cantidad, out string mensaje))
+            {
+                MessageBox.Show(mensaje, "Inventario",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Terminar("Salida", codigo, -cantidad, motivo);
         }
 
-        // En "diferencia" la cantidad es el stock real contado.
+        // Incidencia: el stock contado no coincide con el del sistema.
         private void BtnDiferencia_Click(object sender, EventArgs e)
         {
-            Procesar(Solicitud.Diferencia);
-        }
-
-        private void Procesar(string tipo)
-        {
-            if (!LeerDatos(
-                    tipo == Solicitud.Diferencia,
-                    out string codigo,
-                    out int cantidad,
-                    out string motivo))
+            if (!SesionService.PuedeGestionarDiferencias() ||
+                !SesionService.PuedeActualizarExistencias())
                 return;
+
+            if (!LeerDatos(true, out string codigo, out int stockReal, out string motivo))
+                return;
+
+            Producto producto = ProductoService.BuscarPorCodigo(codigo);
+
+            if (producto == null)
+                return;
+
+            int diferencia = stockReal - producto.Stock;
+
+            if (diferencia == 0)
+            {
+                MessageBox.Show("El stock contado coincide con el sistema.",
+                    "Inventario", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
             bool ok;
             string mensaje;
 
-            if (SesionService.EsAdministrador())
-            {
-                // El Administrador opera directamente.
-                ok = SolicitudService.EjecutarOperacion(
-                    tipo, codigo, cantidad, motivo,
-                    SesionService.ObtenerUsuarioActual(),
-                    out mensaje);
-
-                if (ok)
-                    mensaje = "Operación registrada correctamente.";
-            }
+            if (diferencia > 0)
+                ok = ProductoService.AumentarStock(codigo, diferencia, out mensaje);
             else
+                ok = ProductoService.ReducirStock(codigo, -diferencia, out mensaje);
+
+            if (!ok)
             {
-                // Inventario envía la solicitud al Administrador.
-                ok = SolicitudService.Crear(
-                    tipo, codigo, cantidad, motivo, out mensaje);
+                MessageBox.Show(mensaje, "Inventario",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            MessageBox.Show(mensaje, "Inventario",
-                MessageBoxButtons.OK,
-                ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-
-            if (ok)
-            {
-                txtCantidad.Clear();
-                txtMotivo.Clear();
-                CargarProductos();
-            }
+            Terminar(
+                "Incidencia",
+                codigo,
+                diferencia,
+                $"Diferencia de inventario (sistema: {producto.Stock}, real: {stockReal}). {motivo}");
         }
     }
 }

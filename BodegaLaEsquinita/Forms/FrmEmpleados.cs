@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using BodegaLaEsquinita.Helpers;
-using BodegaLaEsquinita.Models;
-using BodegaLaEsquinita.Services;
+using FediCasa.Helpers;
+using FediCasa.Models;
+using FediCasa.Services;
 
-namespace BodegaLaEsquinita.Forms
+namespace FediCasa.Forms
 {
     public class FrmEmpleados : Form
     {
@@ -53,10 +53,10 @@ namespace BodegaLaEsquinita.Forms
             object sender,
             EventArgs e)
         {
-            if (!SesionService.PuedeVerUsuarios())
+            if (!SesionService.PuedeGestionarUsuarios())
             {
                 MessageBox.Show(
-                    "No tienes permisos para acceder a los usuarios.",
+                    "No tienes permisos para acceder a la gestión de usuarios.",
                     "Acceso denegado",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
@@ -74,7 +74,7 @@ namespace BodegaLaEsquinita.Forms
 
         private void ConfigurarFormulario()
         {
-            Text = "BodegaLaEsquinita - Gestión de usuarios";
+            Text = "FediCasa - Gestión de usuarios";
 
             StartPosition = FormStartPosition.CenterScreen;
 
@@ -113,7 +113,7 @@ namespace BodegaLaEsquinita.Forms
             lblSubtitulo = new Label
             {
                 Text =
-                    "Administra los usuarios y roles autorizados de BodegaLaEsquinita.",
+                    "Administra los usuarios y roles autorizados de FediCasa.",
                 Font = new Font(
                     "Segoe UI",
                     10F),
@@ -185,9 +185,10 @@ namespace BodegaLaEsquinita.Forms
             };
 
             cmbCargo.Items.Add("Administrador");
-            cmbCargo.Items.Add("Vendedor");
+            cmbCargo.Items.Add("Inventario");
+            cmbCargo.Items.Add("Ventas");
 
-            cmbCargo.SelectedIndex = 1;
+            cmbCargo.SelectedIndex = 2;
 
             // -----------------------------------------------------
             // BOTONES
@@ -403,7 +404,7 @@ namespace BodegaLaEsquinita.Forms
                     empleado.Usuario,
                     empleado.NombreCompleto,
                     empleado.EsUsuarioMaestro
-                        ? "Administrador (principal)"
+                        ? "Usuario maestro"
                         : empleado.Cargo);
 
                 dgvEmpleados.Rows[fila].Tag =
@@ -479,10 +480,6 @@ namespace BodegaLaEsquinita.Forms
 
             ArchivoHelper.GuardarEmpleados(
                 empleados);
-
-            ActividadService.Registrar(
-                "Usuario registrado",
-                nuevoEmpleado.Usuario + " (" + nuevoEmpleado.Cargo + ")");
 
             MessageBox.Show(
                 "El usuario fue registrado correctamente.",
@@ -609,6 +606,7 @@ namespace BodegaLaEsquinita.Forms
             {
                 int cantidadAdministradores =
                     empleados.Count(e =>
+                        !e.EsUsuarioMaestro &&
                         e.Cargo.Equals(
                             "Administrador",
                             StringComparison.OrdinalIgnoreCase));
@@ -628,12 +626,6 @@ namespace BodegaLaEsquinita.Forms
                 }
             }
 
-            string antes =
-                empleado.Usuario + " (" + empleado.Cargo + ")";
-
-            bool cambioClave =
-                empleado.Contraseña != txtContraseña.Text;
-
             empleado.Usuario =
                 nuevoUsuario;
 
@@ -651,13 +643,6 @@ namespace BodegaLaEsquinita.Forms
 
             ArchivoHelper.GuardarEmpleados(
                 empleados);
-
-            ActividadService.Registrar(
-                cambioClave
-                    ? "Usuario modificado (contraseña restablecida)"
-                    : "Usuario modificado",
-                antes + " -> " + nuevoUsuario +
-                " (" + cmbCargo.Text + ")");
 
             MessageBox.Show(
                 "El usuario fue modificado correctamente.",
@@ -746,6 +731,7 @@ namespace BodegaLaEsquinita.Forms
             {
                 int cantidadAdministradores =
                     empleados.Count(e =>
+                        !e.EsUsuarioMaestro &&
                         e.Cargo.Equals(
                             "Administrador",
                             StringComparison.OrdinalIgnoreCase));
@@ -778,10 +764,6 @@ namespace BodegaLaEsquinita.Forms
 
             ArchivoHelper.GuardarEmpleados(
                 empleados);
-
-            ActividadService.Registrar(
-                "Usuario eliminado",
-                empleado.Usuario + " (" + empleado.Cargo + ")");
 
             MessageBox.Show(
                 "El usuario fue eliminado correctamente.",
@@ -920,7 +902,7 @@ namespace BodegaLaEsquinita.Forms
 
             if (empleado.EsUsuarioMaestro)
             {
-                cmbCargo.SelectedItem = "Administrador";
+                cmbCargo.SelectedIndex = -1;
 
                 txtUsuario.ReadOnly = true;
                 txtContraseña.ReadOnly = true;
@@ -946,7 +928,7 @@ namespace BodegaLaEsquinita.Forms
             }
             else
             {
-                cmbCargo.SelectedIndex = 1;
+                cmbCargo.SelectedIndex = 2;
             }
 
             ActualizarEstadoControles();
@@ -990,7 +972,7 @@ namespace BodegaLaEsquinita.Forms
             txtContraseña.Clear();
             txtNombre.Clear();
 
-            cmbCargo.SelectedIndex = 1;
+            cmbCargo.SelectedIndex = 2;
 
             dgvEmpleados.ClearSelection();
 

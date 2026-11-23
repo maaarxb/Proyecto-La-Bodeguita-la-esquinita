@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using BodegaLaEsquinita.Models;
+using FediCasa.Models;
 
-namespace BodegaLaEsquinita.Helpers
+namespace FediCasa.Helpers
 {
     public static class ArchivoHelper
     {
@@ -187,83 +187,6 @@ namespace BodegaLaEsquinita.Helpers
         }
 
         // =========================================================
-        // ACTIVIDAD ADMINISTRATIVA (para reportes de turno)
-        // =========================================================
-
-        private static readonly string ArchivoActividad =
-            Path.Combine(CarpetaData, "actividad.txt");
-
-        public static void GuardarActividad(Actividad actividad)
-        {
-            InicializarCarpetaData();
-
-            File.AppendAllText(
-                ArchivoActividad,
-                actividad.ToString() + Environment.NewLine);
-        }
-
-        public static List<Actividad> LeerActividades()
-        {
-            InicializarCarpetaData();
-
-            List<Actividad> lista = new List<Actividad>();
-
-            if (!File.Exists(ArchivoActividad))
-                return lista;
-
-            foreach (string linea in File.ReadAllLines(ArchivoActividad))
-            {
-                Actividad a = Actividad.DesdeTexto(linea);
-
-                if (a != null)
-                    lista.Add(a);
-            }
-
-            return lista;
-        }
-
-        // =========================================================
-        // SOLICITUDES E INCIDENCIAS
-        // =========================================================
-
-        private static readonly string ArchivoSolicitudes =
-            Path.Combine(CarpetaData, "solicitudes.txt");
-
-        public static void GuardarSolicitudes(List<Solicitud> solicitudes)
-        {
-            InicializarCarpetaData();
-
-            using StreamWriter escritor = new StreamWriter(
-                ArchivoSolicitudes,
-                false);
-
-            foreach (Solicitud s in solicitudes)
-            {
-                escritor.WriteLine(s.ToString());
-            }
-        }
-
-        public static List<Solicitud> LeerSolicitudes()
-        {
-            InicializarCarpetaData();
-
-            List<Solicitud> lista = new List<Solicitud>();
-
-            if (!File.Exists(ArchivoSolicitudes))
-                return lista;
-
-            foreach (string linea in File.ReadAllLines(ArchivoSolicitudes))
-            {
-                Solicitud s = Solicitud.DesdeTexto(linea);
-
-                if (s != null)
-                    lista.Add(s);
-            }
-
-            return lista;
-        }
-
-        // =========================================================
         // EMPLEADOS / USUARIOS
         // =========================================================
 
@@ -315,7 +238,7 @@ namespace BodegaLaEsquinita.Helpers
                         Usuario = partes[0].Trim(),
                         Contraseña = partes[1],
                         NombreCompleto = partes[2].Trim(),
-                        Cargo = NormalizarCargo(partes[3]),
+                        Cargo = partes[3].Trim(),
                         EsUsuarioMaestro = esUsuarioMaestro
                     };
 
@@ -333,7 +256,7 @@ namespace BodegaLaEsquinita.Helpers
                         Usuario = partes[0].Trim(),
                         Contraseña = partes[1],
                         NombreCompleto = partes[2].Trim(),
-                        Cargo = NormalizarCargo(partes[3]),
+                        Cargo = partes[3].Trim(),
                         EsUsuarioMaestro =
                             partes[0].Trim().Equals(
                                 "admin",
@@ -352,18 +275,6 @@ namespace BodegaLaEsquinita.Helpers
             return File.Exists(ArchivoEmpleados);
         }
 
-        // Solo existen los cargos Administrador y Vendedor.
-        // Los cargos antiguos (Ventas, Inventario) pasan a Vendedor.
-        private static string NormalizarCargo(string cargo)
-        {
-            string c = (cargo ?? string.Empty).Trim();
-
-            if (c.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
-                return "Administrador";
-
-            return "Vendedor";
-        }
-
         public static void CrearEmpleadosIniciales()
         {
             InicializarCarpetaData();
@@ -373,20 +284,36 @@ namespace BodegaLaEsquinita.Helpers
 
             List<Empleado> empleados = new List<Empleado>
             {
-                // ADMINISTRADOR PRINCIPAL (cuenta protegida)
+                // USUARIO MAESTRO
                 new Empleado(
                     "admin",
                     "1234",
-                    "Administrador BodegaLaEsquinita",
+                    "Usuario Maestro FediCasa",
                     "Administrador",
                     true),
 
-                // VENDEDOR
+                // ACTOR: ADMINISTRADOR
                 new Empleado(
-                    "vendedor",
+                    "administrador",
                     "1234",
-                    "Vendedor BodegaLaEsquinita",
-                    "Vendedor",
+                    "Administrador FediCasa",
+                    "Administrador",
+                    false),
+
+                // ACTOR: INVENTARIO
+                new Empleado(
+                    "inventario",
+                    "1234",
+                    "Responsable de Inventario",
+                    "Inventario",
+                    false),
+
+                // ACTOR: VENTAS
+                new Empleado(
+                    "ventas",
+                    "1234",
+                    "Personal de Ventas",
+                    "Ventas",
                     false)
             };
 

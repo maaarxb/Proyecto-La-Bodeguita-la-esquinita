@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace BodegaLaEsquinita.Models
+namespace FediCasa.Models
 {
     /// <summary>
     /// Registro del historial de operaciones: ingresos, salidas,

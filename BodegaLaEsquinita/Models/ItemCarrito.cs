@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BodegaLaEsquinita.Models
+namespace FediCasa.Models
 {
     /// <summary>
     /// Representa un producto agregado temporalmente

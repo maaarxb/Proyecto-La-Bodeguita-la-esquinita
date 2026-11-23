@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BodegaLaEsquinita.Helpers;
-using BodegaLaEsquinita.Models;
+using FediCasa.Helpers;
+using FediCasa.Models;
 
-namespace BodegaLaEsquinita.Services
+namespace FediCasa.Services
 {
     public static class MovimientoService
     {

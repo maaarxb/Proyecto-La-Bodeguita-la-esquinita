@@ -4,10 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BodegaLaEsquinita.Models;
-using BodegaLaEsquinita.Services;
+using FediCasa.Models;
+using FediCasa.Services;
 
-namespace BodegaLaEsquinita.Helpers
+namespace FediCasa.Helpers
 {
     public static class BoletaHelper
     {
@@ -16,7 +16,7 @@ namespace BodegaLaEsquinita.Helpers
         // =========================================================
 
         public const string NombreNegocio =
-            "BodegaLaEsquinita";
+            "FediCasa";
 
         public const string RucNegocio =
             "RUC: 10458963271";
@@ -295,7 +295,7 @@ namespace BodegaLaEsquinita.Helpers
 
             sb.AppendLine(
                 Centrar(
-                    "BodegaLaEsquinita - Ferretería",
+                    "FediCasa - Ferretería",
                     ancho));
 
             sb.AppendLine(
@@ -403,7 +403,7 @@ namespace BodegaLaEsquinita.Helpers
             if (!File.Exists(ruta))
             {
                 sb.AppendLine(
-                    "HISTORIAL DE BOLETAS - BODEGA LA ESQUINITA");
+                    "HISTORIAL DE BOLETAS - FEDICASA");
 
                 sb.AppendLine(
                     $"Generado: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
